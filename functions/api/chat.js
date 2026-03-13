@@ -21,7 +21,7 @@ export async function onRequest(context) {
 
     // Gemini API 호출 (Streaming 방식)
     const model = "gemini-1.5-flash";
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`;
 
     // Anthropic 형식을 Gemini 형식으로 변환
     const geminiBody = {
