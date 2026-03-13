@@ -412,9 +412,9 @@ function HistoryPanel({ isOpen, onClose, topic }) {
                   {idx < topic.history.length - 1 && (
                     <div style={{ 
                       display: "flex", justifyContent: "center", padding: "12px 0",
-                      fontSize: 18, opacity: 0.9, filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.05))"
+                      fontSize: 20, opacity: 0.8, color: C.primary
                     }}>
-                      🔽
+                      ⬇️
                     </div>
                   )}
                 </div>
