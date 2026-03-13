@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 /* ═══ 컬러 시스템 ═══ */
 const C = {
@@ -310,7 +310,7 @@ function HistoryPanel({ isOpen, onClose, topic }) {
       }} />
       <div ref={scrollRef} style={{
         position: "fixed", top: 0, right: 0, bottom: 0,
-        width: "90vw", background: C.bg, zIndex: 999,
+        width: "100vw", background: C.bg, zIndex: 999,
         transform: isOpen ? "translateX(0)" : "translateX(100%)",
         transition: "transform 0.35s cubic-bezier(0.32,0.72,0,1)",
         overflowY: "auto", WebkitOverflowScrolling: "touch",
@@ -444,7 +444,28 @@ export default function App() {
   const [aiL, setAiL] = useState(false);
   const [search, setSearch] = useState("");
 
-  const openTopic = t => { setPanelTopic(t); setPanelOpen(true); };
+  useEffect(() => {
+    const handlePopState = () => {
+      if (panelOpen) {
+        setPanelOpen(false);
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [panelOpen]);
+
+  const openTopic = t => {
+    window.history.pushState({ modal: true }, "");
+    setPanelTopic(t);
+    setPanelOpen(true);
+  };
+
+  const closePanel = () => {
+    setPanelOpen(false);
+    if (window.history.state?.modal) {
+      window.history.back();
+    }
+  };
 
   const [webSearch, setWebSearch] = useState(false);
 
@@ -547,17 +568,6 @@ ${webSearch ? "웹 검색으로 최신 법령 정보까지 반영합니다." : "
             <div style={{ fontSize: 13, color: C.muted, fontWeight: 500 }}>법령이 언제, 왜, 어떻게 바뀌었는지 한눈에 확인하세요.</div>
           </div>
         </div>
-        <div style={{
-          display: "flex", alignItems: "center", gap: 8,
-          background: C.card, borderRadius: 12, padding: "10px 14px",
-          border: `1.5px solid ${C.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
-        }}>
-          <span style={{ fontSize: 15, color: C.muted }}>🔍</span>
-          <input value={search} onChange={e => setSearch(e.target.value)}
-            placeholder="주제 검색 (스프링클러, 방염, ESS...)"
-            style={{ flex: 1, border: "none", background: "transparent", fontSize: 16, color: C.text, fontFamily: font, outline: "none", fontWeight: 500 }} />
-          {search && <button onClick={() => setSearch("")} style={{ border: "none", background: C.borderSoft, borderRadius: 10, width: 24, height: 24, fontSize: 12, cursor: "pointer", color: C.sub, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>}
-        </div>
       </header>
 
       {/* ─── 홈 ─── */}
@@ -569,7 +579,7 @@ ${webSearch ? "웹 검색으로 최신 법령 정보까지 반영합니다." : "
             border: `1px solid ${C.border}`, boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
           }}>
             <div style={{ fontSize: 15, color: C.text, lineHeight: 1.6, fontWeight: 500 }}>
-              <span style={{ color: C.primary, fontWeight: 650 }}>주제를 선택</span>하면 해당 법령이
+              <span style={{ color: C.primary, fontWeight: 650 }}>항목을 선택</span>하면 해당 법령이
               <span style={{ color: C.primary, fontWeight: 650 }}> 연도별로 어떻게 변경</span>되어 왔는지
               한눈에 볼 수 있습니다. 빠진 항목은 AI가 법제처에서 실시간 검색합니다.
             </div>
@@ -579,7 +589,7 @@ ${webSearch ? "웹 검색으로 최신 법령 정보까지 반영합니다." : "
           <div style={{ marginBottom: 28 }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 14, display: "flex", alignItems: "center", gap: 6 }}>
               <span style={{ width: 3, height: 18, borderRadius: 2, background: C.primary }} />
-              주제별 법령 변천사
+              항목별 법령 변천사
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
               {fTopics.map(t => (
@@ -703,7 +713,7 @@ ${webSearch ? "웹 검색으로 최신 법령 정보까지 반영합니다." : "
         padding: "7px 0 max(env(safe-area-inset-bottom, 0px), 7px)", zIndex: 100,
       }}>
         {[
-          { id: "home", icon: "🏠", label: "주제별 검색" },
+          { id: "home", icon: "🏠", label: "항목별 검색" },
           { id: "ai", icon: "🤖", label: "AI 검색" },
         ].map(t => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{
@@ -719,7 +729,7 @@ ${webSearch ? "웹 검색으로 최신 법령 정보까지 반영합니다." : "
       </nav>
 
       {/* Panel */}
-      <HistoryPanel isOpen={panelOpen} onClose={() => setPanelOpen(false)} topic={panelTopic} />
+      <HistoryPanel isOpen={panelOpen} onClose={closePanel} topic={panelTopic} />
     </div>
   );
 }
