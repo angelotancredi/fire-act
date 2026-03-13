@@ -653,7 +653,7 @@ ${webSearch ? "웹 검색으로 최신 법령 정보까지 반영합니다." : "
   );
 
   return (
-    <div style={{ fontFamily: font, background: C.bg, minHeight: "100vh", maxWidth: 480, margin: "0 auto", position: "relative", paddingBottom: 72, color: C.text }}>
+    <div style={{ fontFamily: font, background: C.bg, minHeight: "100vh", maxWidth: 480, width: "100%", margin: "0 auto", position: "relative", paddingBottom: 72, color: C.text, boxSizing: "border-box", overflowX: "hidden" }}>
       <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet" />
 
       {/* ─── Header ─── */}
@@ -792,7 +792,7 @@ ${webSearch ? "웹 검색으로 최신 법령 정보까지 반영합니다." : "
             {aiL && <Dots c={C.purple} />}
 
             {aiR && (
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: "18px 16px", fontSize: 15, color: C.text, lineHeight: 1.7, fontWeight: 450, whiteSpace: "pre-wrap" }}>
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: "18px 16px", fontSize: 15, color: C.text, lineHeight: 1.7, fontWeight: 450, whiteSpace: "pre-wrap", wordBreak: "break-word", overflowWrap: "anywhere" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${C.borderSoft}` }}>
                   <span style={{ fontSize: 15 }}>🤖</span>
                   <span style={{ fontSize: 14, fontWeight: 700, color: C.purple }}>AI 변천사 분석</span>
