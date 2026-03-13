@@ -411,10 +411,10 @@ function HistoryPanel({ isOpen, onClose, topic }) {
                   {/* 구분 화살표 */}
                   {idx < topic.history.length - 1 && (
                     <div style={{ 
-                      display: "flex", justifyContent: "center", padding: "16px 0",
-                      fontSize: 24, color: C.border, opacity: 0.8
+                      display: "flex", justifyContent: "center", padding: "12px 0",
+                      fontSize: 18, opacity: 0.9, filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.05))"
                     }}>
-                      ↓
+                      🔽
                     </div>
                   )}
                 </div>
