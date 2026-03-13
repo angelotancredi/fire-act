@@ -293,13 +293,13 @@ function getLawInfo(year, topicId, tag) {
 /* ═══ 슬라이드 패널 (주제별 변경 이력) ═══ */
 function HistoryPanel({ isOpen, onClose, topic }) {
   const scrollRef = useRef(null);
-  const prevOpen = useRef(false);
-  if (isOpen && !prevOpen.current && scrollRef.current) {
-    scrollRef.current.scrollTop = 0;
-  }
-  prevOpen.current = isOpen;
 
-  if (!topic) return null;
+  useEffect(() => {
+    if (isOpen && scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [isOpen]);
+
   return (
     <>
       <div onClick={onClose} style={{
@@ -316,119 +316,123 @@ function HistoryPanel({ isOpen, onClose, topic }) {
         overflowY: "auto", WebkitOverflowScrolling: "touch",
         boxShadow: isOpen ? "-6px 0 40px rgba(0,0,0,0.1)" : "none",
       }}>
-        {/* 헤더 */}
-        <div style={{
-          position: "sticky", top: 0, background: C.bg, zIndex: 10,
-          padding: "16px 20px 14px", borderBottom: `1px solid ${C.border}`,
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 26 }}>{topic.icon}</span>
-            <div>
-              <div style={{ fontSize: 19, fontWeight: 700, color: C.text, letterSpacing: "-0.01em" }}>{topic.label}</div>
-              <div style={{ fontSize: 14, color: C.muted, fontWeight: 500 }}>변경 이력 타임라인</div>
-            </div>
-          </div>
-          <button onClick={onClose} style={{
-            width: 34, height: 34, borderRadius: 17, background: C.borderSoft,
-            border: "none", fontSize: 17, color: C.sub, cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-          }}>✕</button>
-        </div>
-
-        {/* 설명 */}
-        <div style={{ padding: "16px 20px 0" }}>
-          <div style={{
-            background: C.accentSoft, borderRadius: 12, padding: "12px 14px",
-            fontSize: 15, color: C.accent, fontWeight: 600, lineHeight: 1.5, marginBottom: 20,
-          }}>📘 {topic.desc}</div>
-        </div>
-
-        {/* 타임라인 */}
-        <div style={{ padding: "0 20px 40px" }}>
-          {topic.history.map((h, idx) => (
-            <div key={idx} style={{ display: "flex", gap: 14, position: "relative" }}>
-              {/* 라인 */}
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 32, flexShrink: 0 }}>
-                <div style={{
-                  width: 32, height: 32, borderRadius: 10,
-                  background: h.tag.includes("화재") || h.tag.includes("강화") || h.tag.includes("계기") ? C.redBg :
-                    h.tag.includes("분법") || h.tag.includes("개편") || h.tag.includes("이관") ? C.purpleSoft :
-                    h.tag.includes("특별법") || h.tag.includes("법제화") ? C.greenBg : C.primarySoft,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 15, fontWeight: 700,
-                  color: h.tag.includes("화재") || h.tag.includes("강화") || h.tag.includes("계기") ? C.red :
-                    h.tag.includes("분법") || h.tag.includes("개편") || h.tag.includes("이관") ? C.purple :
-                    h.tag.includes("특별법") || h.tag.includes("법제화") ? C.green : C.primary,
-                  flexShrink: 0,
-                }}>
-                  {String(h.year).slice(2)}
+        {topic && (
+          <>
+            {/* 헤더 */}
+            <div style={{
+              position: "sticky", top: 0, background: C.bg, zIndex: 10,
+              padding: "16px 20px 14px", borderBottom: `1px solid ${C.border}`,
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 26 }}>{topic.icon}</span>
+                <div>
+                  <div style={{ fontSize: 19, fontWeight: 700, color: C.text, letterSpacing: "-0.01em" }}>{topic.label}</div>
+                  <div style={{ fontSize: 14, color: C.muted, fontWeight: 500 }}>변경 이력 타임라인</div>
                 </div>
-                {idx < topic.history.length - 1 && (
-                  <div style={{ width: 2, flex: 1, background: C.border, marginTop: 4, minHeight: 20 }} />
-                )}
               </div>
+              <button onClick={onClose} style={{
+                width: 34, height: 34, borderRadius: 17, background: C.borderSoft,
+                border: "none", fontSize: 17, color: C.sub, cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+              }}>✕</button>
+            </div>
 
-              {/* 카드 */}
+            {/* 설명 */}
+            <div style={{ padding: "16px 20px 0" }}>
               <div style={{
-                background: C.card, borderRadius: 14,
-                padding: "16px 16px 18px", marginBottom: 14,
-                border: `1px solid ${C.border}`, flex: 1,
-                boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                  <span style={{ fontSize: 19, fontWeight: 700, color: C.primary }}>{h.year}년</span>
-                  <span style={{
-                    fontSize: 13, fontWeight: 600, padding: "2px 9px", borderRadius: 6,
-                    background: h.tag.includes("화재") || h.tag.includes("강화") || h.tag.includes("계기") ? C.redBg :
-                      h.tag.includes("분법") || h.tag.includes("개편") || h.tag.includes("이관") ? C.purpleSoft :
-                      h.tag.includes("특별법") || h.tag.includes("법제화") ? C.greenBg : C.primarySoft,
-                    color: h.tag.includes("화재") || h.tag.includes("강화") || h.tag.includes("계기") ? C.red :
-                      h.tag.includes("분법") || h.tag.includes("개편") || h.tag.includes("이관") ? C.purple :
-                      h.tag.includes("특별법") || h.tag.includes("법제화") ? C.green : C.primary,
-                  }}>{h.tag}</span>
-                </div>
-                <div style={{ fontSize: 17, fontWeight: 650, color: C.text, lineHeight: 1.4, marginBottom: 8 }}>
-                  {h.title}
-                </div>
-                <div style={{ fontSize: 15, color: C.sub, lineHeight: 1.6, marginBottom: 12, fontWeight: 450 }}>
-                  {h.detail}
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  {h.keyPoints.map((kp, ki) => (
-                    <div key={ki} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                      <span style={{
-                        width: 6, height: 6, borderRadius: 3, flexShrink: 0,
-                        background: C.primary, marginTop: 6, opacity: 0.5,
-                      }} />
-                      <span style={{ fontSize: 15, color: C.text, lineHeight: 1.45, fontWeight: 500 }}>{kp}</span>
-                    </div>
-                  ))}
-                </div>
-                {/* 법령 원문 보기 버튼 */}
-                {(() => {
-                  const law = getLawInfo(h.year, topic.id, h.tag);
-                  return (
-                    <button
-                      onClick={(e) => { e.stopPropagation(); window.open(law.url, "_blank"); }}
-                      style={{
-                        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                        width: "100%", marginTop: 14, padding: "12px 0",
-                        background: C.accentSoft, border: `1px solid ${C.accent}30`,
-                        borderRadius: 10, cursor: "pointer", fontFamily: "inherit",
-                        WebkitTapHighlightColor: "transparent",
-                      }}
-                    >
-                      <span style={{ fontSize: 15 }}>📄</span>
-                      <span style={{ fontSize: 14, fontWeight: 600, color: C.accent }}>{law.name}</span>
-                      <span style={{ fontSize: 12, color: C.muted }}>↗</span>
-                    </button>
-                  );
-                })()}
-              </div>
+                background: C.accentSoft, borderRadius: 12, padding: "12px 14px",
+                fontSize: 15, color: C.accent, fontWeight: 600, lineHeight: 1.5, marginBottom: 20,
+              }}>📘 {topic.desc}</div>
             </div>
-          ))}
-        </div>
+
+            {/* 타임라인 */}
+            <div style={{ padding: "0 20px 40px" }}>
+              {topic.history.map((h, idx) => (
+                <div key={idx} style={{ display: "flex", gap: 14, position: "relative" }}>
+                  {/* 라인 */}
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 32, flexShrink: 0 }}>
+                    <div style={{
+                      width: 32, height: 32, borderRadius: 10,
+                      background: h.tag.includes("화재") || h.tag.includes("강화") || h.tag.includes("계기") ? C.redBg :
+                        h.tag.includes("분법") || h.tag.includes("개편") || h.tag.includes("이관") ? C.purpleSoft :
+                        h.tag.includes("특별법") || h.tag.includes("법제화") ? C.greenBg : C.primarySoft,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 15, fontWeight: 700,
+                      color: h.tag.includes("화재") || h.tag.includes("강화") || h.tag.includes("계기") ? C.red :
+                        h.tag.includes("분법") || h.tag.includes("개편") || h.tag.includes("이관") ? C.purple :
+                        h.tag.includes("특별법") || h.tag.includes("법제화") ? C.green : C.primary,
+                      flexShrink: 0,
+                    }}>
+                      {String(h.year).slice(2)}
+                    </div>
+                    {idx < topic.history.length - 1 && (
+                      <div style={{ width: 2, flex: 1, background: C.border, marginTop: 4, minHeight: 20 }} />
+                    )}
+                  </div>
+
+                  {/* 카드 */}
+                  <div style={{
+                    background: C.card, borderRadius: 14,
+                    padding: "16px 16px 18px", marginBottom: 14,
+                    border: `1px solid ${C.border}`, flex: 1,
+                    boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                      <span style={{ fontSize: 19, fontWeight: 700, color: C.primary }}>{h.year}년</span>
+                      <span style={{
+                        fontSize: 13, fontWeight: 600, padding: "2px 9px", borderRadius: 6,
+                        background: h.tag.includes("화재") || h.tag.includes("강화") || h.tag.includes("계기") ? C.redBg :
+                          h.tag.includes("분법") || h.tag.includes("개편") || h.tag.includes("이관") ? C.purpleSoft :
+                          h.tag.includes("특별법") || h.tag.includes("법제화") ? C.greenBg : C.primarySoft,
+                        color: h.tag.includes("화재") || h.tag.includes("강화") || h.tag.includes("계기") ? C.red :
+                          h.tag.includes("분법") || h.tag.includes("개편") || h.tag.includes("이관") ? C.purple :
+                          h.tag.includes("특별법") || h.tag.includes("법제화") ? C.green : C.primary,
+                      }}>{h.tag}</span>
+                    </div>
+                    <div style={{ fontSize: 17, fontWeight: 650, color: C.text, lineHeight: 1.4, marginBottom: 8 }}>
+                      {h.title}
+                    </div>
+                    <div style={{ fontSize: 15, color: C.sub, lineHeight: 1.6, marginBottom: 12, fontWeight: 450 }}>
+                      {h.detail}
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      {h.keyPoints.map((kp, ki) => (
+                        <div key={ki} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                          <span style={{
+                            width: 6, height: 6, borderRadius: 3, flexShrink: 0,
+                            background: C.primary, marginTop: 6, opacity: 0.5,
+                          }} />
+                          <span style={{ fontSize: 15, color: C.text, lineHeight: 1.45, fontWeight: 500 }}>{kp}</span>
+                        </div>
+                      ))}
+                    </div>
+                    {/* 법령 원문 보기 버튼 */}
+                    {(() => {
+                      const law = getLawInfo(h.year, topic.id, h.tag);
+                      return (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); window.open(law.url, "_blank"); }}
+                          style={{
+                            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                            width: "100%", marginTop: 14, padding: "12px 0",
+                            background: C.accentSoft, border: `1px solid ${C.accent}30`,
+                            borderRadius: 10, cursor: "pointer", fontFamily: "inherit",
+                            WebkitTapHighlightColor: "transparent",
+                          }}
+                        >
+                          <span style={{ fontSize: 15 }}>📄</span>
+                          <span style={{ fontSize: 14, fontWeight: 600, color: C.accent }}>{law.name}</span>
+                          <span style={{ fontSize: 12, color: C.muted }}>↗</span>
+                        </button>
+                      );
+                    })()}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </>
   );
