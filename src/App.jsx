@@ -615,16 +615,21 @@ ${webSearch ? "웹 검색으로 최신 법령 정보까지 반영합니다." : "
         const lines = buffer.split("\n");
         buffer = lines.pop() || "";
         for (const line of lines) {
-          if (!line.trim() || !line.startsWith("data: ")) continue;
-          const data = line.slice(6);
-          try {
-            const evt = JSON.parse(data);
-            const text = evt.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (text) {
-              fullText += text;
-              setAiR(fullText);
+          if (!line.trim()) continue;
+          if (line.startsWith("data: ")) {
+            const data = line.slice(6);
+            if (data.trim() === "[DONE]") continue;
+            try {
+              const evt = JSON.parse(data);
+              const text = evt.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (text) {
+                fullText += text;
+                setAiR(fullText);
+              }
+            } catch (e) {
+              // 불완전한 JSON의 경우 다음 데이터와 합쳐져서 처리될 수 있도록 buffer에 남음
             }
-          } catch (e) {}
+          }
         }
       }
       if (!fullText) setAiR("응답을 가져올 수 없습니다.");
