@@ -615,16 +615,16 @@ ${webSearch ? "웹 검색으로 최신 법령 정보까지 반영합니다." : "
         const lines = buffer.split("\n");
         buffer = lines.pop() || "";
         for (const line of lines) {
-          if (!line.startsWith("data: ")) continue;
+          if (!line.trim() || !line.startsWith("data: ")) continue;
           const data = line.slice(6);
-          if (data === "[DONE]") continue;
           try {
             const evt = JSON.parse(data);
-            if (evt.type === "content_block_delta" && evt.delta?.type === "text_delta") {
-              fullText += evt.delta.text;
+            const text = evt.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (text) {
+              fullText += text;
               setAiR(fullText);
             }
-          } catch { }
+          } catch (e) {}
         }
       }
       if (!fullText) setAiR("응답을 가져올 수 없습니다.");
