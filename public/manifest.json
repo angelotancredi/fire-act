@@ -1,0 +1,20 @@
+{
+  "short_name": "소방법가이드",
+  "name": "소방법가이드",
+  "icons": [
+    {
+      "src": "/icon.jpg",
+      "type": "image/jpeg",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon.jpg",
+      "type": "image/jpeg",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#D95525",
+  "background_color": "#F6F4F0"
+}
