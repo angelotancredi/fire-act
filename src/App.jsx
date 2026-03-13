@@ -349,39 +349,18 @@ function HistoryPanel({ isOpen, onClose, topic }) {
             {/* 타임라인 */}
             <div style={{ padding: "0 20px 40px" }}>
               {topic.history.map((h, idx) => (
-                <div key={idx} style={{ display: "flex", gap: 14, position: "relative" }}>
-                  {/* 라인 */}
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 32, flexShrink: 0 }}>
-                    <div style={{
-                      width: 32, height: 32, borderRadius: 10,
-                      background: h.tag.includes("화재") || h.tag.includes("강화") || h.tag.includes("계기") ? C.redBg :
-                        h.tag.includes("분법") || h.tag.includes("개편") || h.tag.includes("이관") ? C.purpleSoft :
-                        h.tag.includes("특별법") || h.tag.includes("법제화") ? C.greenBg : C.primarySoft,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 15, fontWeight: 700,
-                      color: h.tag.includes("화재") || h.tag.includes("강화") || h.tag.includes("계기") ? C.red :
-                        h.tag.includes("분법") || h.tag.includes("개편") || h.tag.includes("이관") ? C.purple :
-                        h.tag.includes("특별법") || h.tag.includes("법제화") ? C.green : C.primary,
-                      flexShrink: 0,
-                    }}>
-                      {String(h.year).slice(2)}
-                    </div>
-                    {idx < topic.history.length - 1 && (
-                      <div style={{ width: 2, flex: 1, background: C.border, marginTop: 4, minHeight: 20 }} />
-                    )}
-                  </div>
-
+                <div key={idx}>
                   {/* 카드 */}
                   <div style={{
                     background: C.card, borderRadius: 14,
-                    padding: "16px 16px 18px", marginBottom: 14,
-                    border: `1px solid ${C.border}`, flex: 1,
+                    padding: "18px 20px 20px",
+                    border: `1px solid ${C.border}`,
                     boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
                   }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                      <span style={{ fontSize: 19, fontWeight: 700, color: C.primary }}>{h.year}년</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                      <span style={{ fontSize: 22, fontWeight: 800, color: C.primary, letterSpacing: "-0.02em" }}>{h.year}년</span>
                       <span style={{
-                        fontSize: 13, fontWeight: 600, padding: "2px 9px", borderRadius: 6,
+                        fontSize: 13, fontWeight: 600, padding: "3px 10px", borderRadius: 7,
                         background: h.tag.includes("화재") || h.tag.includes("강화") || h.tag.includes("계기") ? C.redBg :
                           h.tag.includes("분법") || h.tag.includes("개편") || h.tag.includes("이관") ? C.purpleSoft :
                           h.tag.includes("특별법") || h.tag.includes("법제화") ? C.greenBg : C.primarySoft,
@@ -390,20 +369,20 @@ function HistoryPanel({ isOpen, onClose, topic }) {
                           h.tag.includes("특별법") || h.tag.includes("법제화") ? C.green : C.primary,
                       }}>{h.tag}</span>
                     </div>
-                    <div style={{ fontSize: 17, fontWeight: 650, color: C.text, lineHeight: 1.4, marginBottom: 8 }}>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: C.text, lineHeight: 1.4, marginBottom: 10 }}>
                       {h.title}
                     </div>
-                    <div style={{ fontSize: 15, color: C.sub, lineHeight: 1.6, marginBottom: 12, fontWeight: 450 }}>
+                    <div style={{ fontSize: 15, color: C.sub, lineHeight: 1.6, marginBottom: 14, fontWeight: 450 }}>
                       {h.detail}
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
                       {h.keyPoints.map((kp, ki) => (
-                        <div key={ki} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                        <div key={ki} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                           <span style={{
                             width: 6, height: 6, borderRadius: 3, flexShrink: 0,
-                            background: C.primary, marginTop: 6, opacity: 0.5,
+                            background: C.primary, marginTop: 7, opacity: 0.5,
                           }} />
-                          <span style={{ fontSize: 15, color: C.text, lineHeight: 1.45, fontWeight: 500 }}>{kp}</span>
+                          <span style={{ fontSize: 15, color: C.text, lineHeight: 1.5, fontWeight: 500 }}>{kp}</span>
                         </div>
                       ))}
                     </div>
@@ -415,7 +394,7 @@ function HistoryPanel({ isOpen, onClose, topic }) {
                           onClick={(e) => { e.stopPropagation(); window.open(law.url, "_blank"); }}
                           style={{
                             display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                            width: "100%", marginTop: 14, padding: "12px 0",
+                            width: "100%", padding: "12px 0",
                             background: C.accentSoft, border: `1px solid ${C.accent}30`,
                             borderRadius: 10, cursor: "pointer", fontFamily: "inherit",
                             WebkitTapHighlightColor: "transparent",
@@ -428,6 +407,16 @@ function HistoryPanel({ isOpen, onClose, topic }) {
                       );
                     })()}
                   </div>
+
+                  {/* 구분 화살표 */}
+                  {idx < topic.history.length - 1 && (
+                    <div style={{ 
+                      display: "flex", justifyContent: "center", padding: "16px 0",
+                      fontSize: 24, color: C.border, opacity: 0.8
+                    }}>
+                      ↓
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
