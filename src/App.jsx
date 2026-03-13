@@ -591,8 +591,8 @@ ${webSearch ? "웹 검색으로 최신 법령 정보까지 반영합니다." : "
       };
       if (webSearch) body.tools = [{ type: "web_search_20250305", name: "web_search" }];
 
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST", headers: { "Content-Type": "application/json" },
+      const res = await fetch("/api/chat", {
+        method: "POST",
         body: JSON.stringify(body),
       });
 
